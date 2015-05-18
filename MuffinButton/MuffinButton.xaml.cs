@@ -17,11 +17,12 @@ namespace MButton
     /// <summary>
     /// Interaction logic for MuffinButton.xaml
     /// </summary>
-    public partial class MuffinButton : UserControl
+    public class MuffinButton : Button
     {
         public MuffinButton()
         {
             InitializeComponent();
+            this.Click += Button_Click;
         }
 
         private FrameworkElement GetParent(Type t)
