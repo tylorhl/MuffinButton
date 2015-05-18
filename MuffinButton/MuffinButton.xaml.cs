@@ -21,10 +21,10 @@ namespace MButton
     {
         public MuffinButton()
         {
-            InitializeComponent();
             this.Click += Button_Click;
         }
 
+        //Just using this to get the parent window.
         private FrameworkElement GetParent(Type t)
         {
             FrameworkElement f = this;
@@ -36,6 +36,7 @@ namespace MButton
             return f;
         }
 
+        //Used for closing purposes.
         private Window owner;
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -45,25 +46,34 @@ namespace MButton
 
             if (owner != null)
             {
-                Window w = new Window() { Width = 50, Height = 50 };
+                //Create unstyled window
+                Window w = new Window();
                 w.Topmost = true;
 
                 w.WindowStyle = WindowStyle.None;
                 w.AllowsTransparency = true;
+                w.ShowInTaskbar = false;
                 w.Background = new SolidColorBrush(Colors.Transparent);
                 w.ResizeMode = ResizeMode.NoResize;
                 w.WindowStartupLocation = WindowStartupLocation.Manual;
 
+                //Random size and position
                 Random r = new Random(Convert.ToInt32(DateTime.Now.Millisecond));
-                w.Left = r.Next(0, Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenWidth) - 300);
-                w.Top = r.Next(0, Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenHeight) - 300);
+                int size = r.Next(50, 150);
+                w.Width = size;
+                w.Height = size;
 
+                w.Left = r.Next(0, Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenWidth) - size);
+                w.Top = r.Next(0, Convert.ToInt32(System.Windows.SystemParameters.PrimaryScreenHeight) - size);
+
+                //Get the stored image. This was a pain to get right.
                 BitmapImage bi = new BitmapImage(new Uri(@"pack://application:,,,/MButton;component/smallmuffin.png", UriKind.Absolute));
 
                 Image im = new Image();
                 im.Source = bi;
                 im.Stretch = Stretch.Fill;
 
+                //Let's make sure these muffins aren't permanent.
                 w.MouseUp += (sndr, eventArgs) =>
                     {
                         w.Close();
@@ -71,7 +81,7 @@ namespace MButton
 
                 w.Content = im;
 
-
+                //Set the owner so all muffins will go away when the owner closes.
                 w.Owner = owner;
                 w.Show();
             }
